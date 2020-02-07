@@ -1,13 +1,19 @@
 package com.example.projetinho;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
@@ -30,11 +36,21 @@ public class CadastroActivity extends AppCompatActivity {
         editTextTelefone = findViewById(R.id.editTextTelefoneC);
         editTextSenha = findViewById(R.id.editTextSenhaC);
         switchTipo = findViewById(R.id.switchTipo);
+        buttonCadastrar = findViewById(R.id.buttonCadastrar);
+
+        buttonCadastrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ValidarCampoC()){
+                    cadastraUsuario();
+                }
+            }
+        });
 
     }
 
     public String tipoUsuario(){
-        return switchTipo.isChecked() ? "Usuario" : "Socorrista";
+        return switchTipo.isChecked() ? "Socorrista" : "Usuario";
     }
 
     public boolean ValidarCampoC() {
@@ -48,7 +64,7 @@ public class CadastroActivity extends AppCompatActivity {
             editTextTelefone.requestFocus();
             return false;
 
-        } else if (editTextEmail.getText().toString().isEmpty() || editTextEmail.getText().toString().equals("@")) {
+        } else if (editTextEmail.getText().toString().isEmpty() || !editTextEmail.getText().toString().contains("@")) {
             Toast.makeText(this, "Preencha o campo e-mail corretamente", Toast.LENGTH_SHORT).show();
             editTextEmail.requestFocus();
             return false;
@@ -65,4 +81,40 @@ public class CadastroActivity extends AppCompatActivity {
 
     }
 
+    public void cadastraUsuario(){
+        //salva os dados do login
+        auth.createUserWithEmailAndPassword(editTextEmail.getText().toString(), editTextSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()){
+                    //instancia a classe usuaria
+                    Usuario usuario = new Usuario();
+                    //pega o id que foi salvo no processo da cração de login e senha
+                    usuario.setId(task.getResult().getUser().getUid());
+                    usuario.setEmail(editTextEmail.getText().toString());
+                    usuario.setSenha(editTextSenha.getText().toString());
+                    usuario.setNome(editTextNome.getText().toString());
+                    usuario.setTelefone(editTextTelefone.getText().toString());
+                    usuario.setTipo(tipoUsuario());
+
+                    if(tipoUsuario() == "Usuario"){
+                        startActivity(new Intent(CadastroActivity.this, MapsUsuarioActivity.class));
+                    }else{
+                        startActivity(new Intent(CadastroActivity.this, SocorristaActivity.class));
+                    }
+
+                    usuario.cadastrarUsuario(task.getResult().getUser().getUid());
+
+                }else{
+                    try{
+                        throw task.getException();
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+    }
 }

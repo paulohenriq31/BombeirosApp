@@ -1,8 +1,18 @@
 package com.example.projetinho;
 
+import com.google.firebase.database.DatabaseReference;
+
 public class Usuario {
 
-    String id, nome, telefone, email, senha;
+    String id, nome, telefone, email, senha, tipo;
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 
     public String getId() {
         return id;
@@ -46,5 +56,10 @@ public class Usuario {
 
     public Usuario() {
 
+    }
+
+    public void cadastrarUsuario(String id){
+        DatabaseReference reference = ConexaoRealtimeDatabase.check();
+        reference.child("usuario").child(id).setValue(this);
     }
 }
