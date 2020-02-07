@@ -59,7 +59,10 @@ public class Usuario {
     }
 
     public void cadastrarUsuario(String id){
+
         DatabaseReference reference = ConexaoRealtimeDatabase.check();
+
         reference.child("usuario").child(id).setValue(this);
+
     }
 }

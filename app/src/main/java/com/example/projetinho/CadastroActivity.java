@@ -31,6 +31,8 @@ public class CadastroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
 
+        auth = AutenticacaoComFirebase.check();
+
         editTextEmail = findViewById(R.id.editTextEmailC);
         editTextNome = findViewById(R.id.editTextNomeC);
         editTextTelefone = findViewById(R.id.editTextTelefoneC);
@@ -42,7 +44,7 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(ValidarCampoC()){
-                    cadastraUsuario();
+                    cadastrarUsuario();
                 }
             }
         });
@@ -81,40 +83,40 @@ public class CadastroActivity extends AppCompatActivity {
 
     }
 
-    public void cadastraUsuario(){
-        //salva os dados do login
-        auth.createUserWithEmailAndPassword(editTextEmail.getText().toString(), editTextSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+    public void cadastrarUsuario(){
+        //primeiro vamos salvar os dados de login
+        auth.createUserWithEmailAndPassword(editTextEmail.getText().toString(),editTextSenha.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            //instancia a classe usuarioa
+                            Usuario usuario = new Usuario();
+                            //pega o id que foi salvo no processo de craição do login e senha
+                            usuario.setId(task.getResult().getUser().getUid());
+                            usuario.setEmail(editTextEmail.getText().toString());
+                            usuario.setSenha(editTextSenha.getText().toString());
+                            usuario.setNome(editTextNome.getText().toString());
+                            usuario.setTelefone(editTextTelefone.getText().toString());
+                            usuario.setTipo(tipoUsuario());
 
-                if (task.isSuccessful()){
-                    //instancia a classe usuaria
-                    Usuario usuario = new Usuario();
-                    //pega o id que foi salvo no processo da cração de login e senha
-                    usuario.setId(task.getResult().getUser().getUid());
-                    usuario.setEmail(editTextEmail.getText().toString());
-                    usuario.setSenha(editTextSenha.getText().toString());
-                    usuario.setNome(editTextNome.getText().toString());
-                    usuario.setTelefone(editTextTelefone.getText().toString());
-                    usuario.setTipo(tipoUsuario());
+                            if(tipoUsuario() == "Usuario"){
+                                startActivity(new Intent(CadastroActivity.this, MapsUsuarioActivity.class));
+                            }else{
+                                startActivity(new Intent(CadastroActivity.this, SocorristaActivity.class));
+                            }
 
-                    if(tipoUsuario() == "Usuario"){
-                        startActivity(new Intent(CadastroActivity.this, MapsUsuarioActivity.class));
-                    }else{
-                        startActivity(new Intent(CadastroActivity.this, SocorristaActivity.class));
+                            usuario.cadastrarUsuario(task.getResult().getUser().getUid());
+
+                        }else{
+                            try{
+                                throw task.getException();
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                            }
+                        }
                     }
-
-                    usuario.cadastrarUsuario(task.getResult().getUser().getUid());
-
-                }else{
-                    try{
-                        throw task.getException();
-                    }catch (Exception ex){
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
+                });
 
     }
 }
