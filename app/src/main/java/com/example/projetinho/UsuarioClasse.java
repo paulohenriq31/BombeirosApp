@@ -2,7 +2,7 @@ package com.example.projetinho;
 
 import com.google.firebase.database.DatabaseReference;
 
-public class Usuario {
+public class UsuarioClasse {
 
     String id, nome, telefone, email, senha, tipo;
 
@@ -54,7 +54,7 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public Usuario() {
+    public UsuarioClasse() {
 
     }
 

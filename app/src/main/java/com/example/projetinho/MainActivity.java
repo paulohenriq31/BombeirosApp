@@ -1,11 +1,14 @@
 package com.example.projetinho;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,15 +28,20 @@ public class MainActivity extends AppCompatActivity {
 
     EditText editTextEmail, editTextSenha;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        PermissoesClasse.validarPermissoes(permissoes, this, 1);
+
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
+
     }
+    private String [] permissoes = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
 
     public void goToLogin(View view){
 
@@ -53,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Usuario usuario = dataSnapshot.getValue(Usuario.class);
+                            UsuarioClasse usuario = dataSnapshot.getValue(UsuarioClasse.class);
 
                             if(usuario.getTipo().equals("Usuario")){
                                 startActivity(new Intent(MainActivity.this, MapsUsuarioActivity.class));
@@ -79,4 +87,33 @@ public class MainActivity extends AppCompatActivity {
         Intent cadastro = new Intent(MainActivity.this, CadastroActivity.class);
         startActivity(cadastro);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResult){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResult);
+
+        for (int permissaoResultado : grantResult){
+            if (permissaoResultado == PackageManager.PERMISSION_DENIED){
+                alertaValidaçãoPermissao();
+            }
+        }
+    }
+
+    private void alertaValidaçãoPermissao() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permissao Negada!");
+        builder.setMessage("Para ultilizar esse APP aceite as permissões");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

@@ -91,7 +91,7 @@ public class CadastroActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             //instancia a classe usuarioa
-                            Usuario usuario = new Usuario();
+                            UsuarioClasse usuario = new UsuarioClasse();
                             //pega o id que foi salvo no processo de craição do login e senha
                             usuario.setId(task.getResult().getUser().getUid());
                             usuario.setEmail(editTextEmail.getText().toString());
