@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                             UsuarioClasse usuario = dataSnapshot.getValue(UsuarioClasse.class);
 
                             if(usuario.getTipo().equals("Usuario")){
-                                startActivity(new Intent(MainActivity.this, MapsUsuarioActivity.class));
+                                startActivity(new Intent(MainActivity.this, UsuarioActivity.class));
                             }else if(usuario.getTipo().equals("Socorrista")){
                                 startActivity(new Intent(MainActivity.this, SocorristaActivity.class));
                             }

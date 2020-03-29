@@ -101,7 +101,7 @@ public class CadastroActivity extends AppCompatActivity {
                             usuario.setTipo(tipoUsuario());
 
                             if(tipoUsuario() == "Usuario"){
-                                startActivity(new Intent(CadastroActivity.this, MapsUsuarioActivity.class));
+                                startActivity(new Intent(CadastroActivity.this, UsuarioActivity.class));
                             }else{
                                 startActivity(new Intent(CadastroActivity.this, SocorristaActivity.class));
                             }
