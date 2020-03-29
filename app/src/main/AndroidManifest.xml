@@ -31,9 +31,9 @@
 
         <activity
             android:name=".MapsUsuarioActivity"
-            android:label="@string/title_activity_maps_usuario"></activity>
-        <activity android:name=".SocorristaActivity" />
-        <activity android:name=".CadastroActivity" android:label="Faça seu cadastro"
+            android:label="@string/title_activity_maps_usuario" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".SocorristaActivity" android:label="Tela Socorrista" android:parentActivityName=".MainActivity"/>
+        <activity android:name=".CadastroActivity" android:label="Faça seu Cadastro"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
