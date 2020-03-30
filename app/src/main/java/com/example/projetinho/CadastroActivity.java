@@ -103,7 +103,7 @@ public class CadastroActivity extends AppCompatActivity {
                             if(tipoUsuario() == "Usuario"){
                                 startActivity(new Intent(CadastroActivity.this, UsuarioActivity.class));
                             }else{
-                                startActivity(new Intent(CadastroActivity.this, SocorristaActivity.class));
+                                startActivity(new Intent(CadastroActivity.this, RequisicoesActivity.class));
                             }
 
                             usuario.cadastrarUsuario(task.getResult().getUser().getUid());

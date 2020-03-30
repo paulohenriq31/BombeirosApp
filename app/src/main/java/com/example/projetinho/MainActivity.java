@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                             if(usuario.getTipo().equals("Usuario")){
                                 startActivity(new Intent(MainActivity.this, UsuarioActivity.class));
                             }else if(usuario.getTipo().equals("Socorrista")){
-                                startActivity(new Intent(MainActivity.this, SocorristaActivity.class));
+                                startActivity(new Intent(MainActivity.this, RequisicoesActivity.class));
                             }
                         }
                         @Override
